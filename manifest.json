@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Mouse Side Button Remapper",
+  "version": "1.0.0",
+  "description": "Remap mouse Back and Forward thumb buttons to useful Chrome actions.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "sessions"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}

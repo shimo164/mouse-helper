@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mouse Side Button Remapper</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="settings-card">
+      <header>
+        <div class="mouse-mark" aria-hidden="true">
+          <span></span>
+        </div>
+        <div>
+          <h1>Mouse Side Button Remapper</h1>
+          <p>Choose what your mouse thumb buttons do in Chrome.</p>
+        </div>
+      </header>
+
+      <form id="settings-form">
+        <label class="toggle-row" for="enabled">
+          <span>
+            <strong>Enable remapping</strong>
+            <small>Apply these actions on supported web pages</small>
+          </span>
+          <span class="switch">
+            <input id="enabled" name="enabled" type="checkbox" />
+            <span class="switch-track" aria-hidden="true"></span>
+          </span>
+        </label>
+
+        <div class="field">
+          <label for="xbutton1">Back thumb button</label>
+          <select id="xbutton1" name="xbutton1"></select>
+        </div>
+
+        <div class="field">
+          <label for="xbutton2">Forward thumb button</label>
+          <select id="xbutton2" name="xbutton2"></select>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit">Save</button>
+          <button id="restore-defaults" class="secondary" type="button">
+            Restore defaults
+          </button>
+          <span id="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+
+      <p class="note">
+        Chrome may still handle Back or Forward on some pages. Remapping is not
+        available on Chrome's internal pages or the Chrome Web Store.
+      </p>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>
