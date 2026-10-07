@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
 const DEFAULT_SETTINGS = Object.freeze({
   enabled: true,
-  xbutton1: "closeTab",
-  xbutton2: "enter",
+  xbutton1: 'closeTab',
+  xbutton2: 'enter',
 });
 
 const BUTTON_SETTING_KEYS = Object.freeze({
-  3: "xbutton1",
-  4: "xbutton2",
+  3: 'xbutton2',
+  4: 'xbutton1',
 });
 
-const BACKGROUND_ACTIONS = new Set(["closeTab", "newTab", "restoreTab"]);
-const PAGE_ACTIONS = new Set(["back", "forward", "reload", "enter", "none"]);
+const BACKGROUND_ACTIONS = new Set(['closeTab', 'newTab', 'restoreTab']);
+const PAGE_ACTIONS = new Set(['back', 'forward', 'reload', 'enter', 'none']);
 const pressedButtons = new Set();
 const lastMouseDownTimes = new Map();
 let settings = { ...DEFAULT_SETTINGS };
@@ -24,7 +24,7 @@ chrome.storage.local.get(DEFAULT_SETTINGS, (storedSettings) => {
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName !== "local") {
+  if (areaName !== 'local') {
     return;
   }
 
@@ -40,19 +40,19 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   }
 });
 
-window.addEventListener("mousedown", handleMouseDown, {
+window.addEventListener('mousedown', handleMouseDown, {
   capture: true,
   passive: false,
 });
-window.addEventListener("mouseup", handleMouseUp, {
+window.addEventListener('mouseup', handleMouseUp, {
   capture: true,
   passive: false,
 });
-window.addEventListener("auxclick", handleAuxClick, {
+window.addEventListener('auxclick', handleAuxClick, {
   capture: true,
   passive: false,
 });
-window.addEventListener("blur", () => pressedButtons.clear(), true);
+window.addEventListener('blur', () => pressedButtons.clear(), true);
 
 function handleMouseDown(event) {
   if (!isMappedButton(event.button) || !settings.enabled) {
@@ -110,7 +110,7 @@ function executeConfiguredAction(button) {
 
   if (BACKGROUND_ACTIONS.has(action)) {
     chrome.runtime.sendMessage(
-      { type: "executeAction", action },
+      { type: 'executeAction', action },
       () => void chrome.runtime.lastError,
     );
     return;
@@ -121,19 +121,19 @@ function executeConfiguredAction(button) {
   }
 
   switch (action) {
-    case "back":
+    case 'back':
       history.back();
       break;
-    case "forward":
+    case 'forward':
       history.forward();
       break;
-    case "reload":
+    case 'reload':
       location.reload();
       break;
-    case "enter":
+    case 'enter':
       performEnterLikeAction();
       break;
-    case "none":
+    case 'none':
       break;
   }
 }
@@ -147,24 +147,24 @@ function performEnterLikeAction() {
 
   const shouldActivate =
     element instanceof HTMLButtonElement ||
-    (element instanceof HTMLAnchorElement && element.hasAttribute("href")) ||
+    (element instanceof HTMLAnchorElement && element.hasAttribute('href')) ||
     (element instanceof HTMLInputElement &&
-      ["button", "submit", "reset", "image"].includes(element.type)) ||
-    element.getAttribute("role") === "button" ||
-    element.getAttribute("role") === "link";
+      ['button', 'submit', 'reset', 'image'].includes(element.type)) ||
+    element.getAttribute('role') === 'button' ||
+    element.getAttribute('role') === 'link';
 
-  const keyDownAccepted = dispatchKeyboardEvent(element, "keydown");
-  const keyPressAccepted = dispatchKeyboardEvent(element, "keypress");
+  const keyDownAccepted = dispatchKeyboardEvent(element, 'keydown');
+  const keyPressAccepted = dispatchKeyboardEvent(element, 'keypress');
 
   if (keyDownAccepted && keyPressAccepted) {
-    if (shouldActivate && typeof element.click === "function") {
+    if (shouldActivate && typeof element.click === 'function') {
       element.click();
     } else if (isSubmittableTextInput(element) && element.form?.requestSubmit) {
       element.form.requestSubmit();
     }
   }
 
-  dispatchKeyboardEvent(element, "keyup");
+  dispatchKeyboardEvent(element, 'keyup');
 }
 
 function dispatchEnterEvents(element) {
@@ -172,18 +172,18 @@ function dispatchEnterEvents(element) {
     return;
   }
 
-  dispatchKeyboardEvent(element, "keydown");
-  dispatchKeyboardEvent(element, "keypress");
-  dispatchKeyboardEvent(element, "keyup");
+  dispatchKeyboardEvent(element, 'keydown');
+  dispatchKeyboardEvent(element, 'keypress');
+  dispatchKeyboardEvent(element, 'keyup');
 }
 
 function dispatchKeyboardEvent(element, type) {
   return element.dispatchEvent(
     new KeyboardEvent(type, {
-      key: "Enter",
-      code: "Enter",
+      key: 'Enter',
+      code: 'Enter',
       keyCode: 13,
-      charCode: type === "keypress" ? 13 : 0,
+      charCode: type === 'keypress' ? 13 : 0,
       which: 13,
       bubbles: true,
       cancelable: true,
@@ -196,23 +196,15 @@ function dispatchKeyboardEvent(element, type) {
 function isSubmittableTextInput(element) {
   return (
     element instanceof HTMLInputElement &&
-    ["text", "search", "email", "url", "tel", "password", "number"].includes(
-      element.type,
-    )
+    ['text', 'search', 'email', 'url', 'tel', 'password', 'number'].includes(element.type)
   );
 }
 
 function sanitizeSettings(candidate) {
-  const supportedActions = new Set([
-    ...BACKGROUND_ACTIONS,
-    ...PAGE_ACTIONS,
-  ]);
+  const supportedActions = new Set([...BACKGROUND_ACTIONS, ...PAGE_ACTIONS]);
 
   return {
-    enabled:
-      typeof candidate.enabled === "boolean"
-        ? candidate.enabled
-        : DEFAULT_SETTINGS.enabled,
+    enabled: typeof candidate.enabled === 'boolean' ? candidate.enabled : DEFAULT_SETTINGS.enabled,
     xbutton1: supportedActions.has(candidate.xbutton1)
       ? candidate.xbutton1
       : DEFAULT_SETTINGS.xbutton1,
